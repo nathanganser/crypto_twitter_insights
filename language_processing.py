@@ -4,16 +4,16 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 sia = SentimentIntensityAnalyzer()
 
 
-# nltk.download([
-#    "names",
-#    "stopwords",
-#    "state_union",
-#    "twitter_samples",
-#    "movie_reviews",
-#    "averaged_perceptron_tagger",
-#    "vader_lexicon",
-#    "punkt",
-# ])
+nltk.download([
+    "names",
+    "stopwords",
+    "state_union",
+    "twitter_samples",
+    "movie_reviews",
+    "averaged_perceptron_tagger",
+    "vader_lexicon",
+    "punkt",
+ ])
 
 def ct_market_sentiment(tweet_set):
     neg, neu, pos, compound = 0, 0, 0, 0

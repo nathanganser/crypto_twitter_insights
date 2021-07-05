@@ -21,9 +21,7 @@ def get_data(market_cap_min=100000,market_cap_max=500000000, volume_24h_min=1000
 def get_low_market_cap_coins():
     coin_names = []
     coins = get_data().get('data')
-    #d = enchant.Dict("en_US")
     for coin in coins:
         coin_names.append(coin.get('name'))
-        #if not d.check(coin):
     return coin_names
 
