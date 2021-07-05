@@ -35,7 +35,7 @@ def show_user(user):
 def count_retweets_by_influencers(tweet_id, influencer_ids):
     # getting ids
     retweeters = api.retweeters(tweet_id)
-    print(f'got the retweets of that tweet: {retweeters}')
+    #print(f'got the retweets of that tweet: {retweeters}')
     return len(set(influencer_ids).intersection(retweeters))
 
 
