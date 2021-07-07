@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-def get_data(market_cap_min=100000,market_cap_max=500000000, volume_24h_min=10000):
+def get_data(market_cap_min=100000,market_cap_max=50000000, volume_24h_min=10000):
     url = f"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?market_cap_min={market_cap_min}&market_cap_max={market_cap_max}&volume_24h_min={volume_24h_min}&limit=1000"
 
     payload = {}

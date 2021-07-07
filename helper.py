@@ -40,7 +40,7 @@ def count_retweets_by_influencers(tweet_id, influencer_ids):
     return len(set(influencer_ids).intersection(retweeters))
 
 
-def get_tweet_importance(tweet, retweet_weight=0.5, like_weight=0.1,
+def get_tweet_importance(tweet, retweet_weight=0.5, like_weight=0.3,
                          follower_weight=0.01, link_weight=10):
     tweet_importance = tweet.retweet_count * retweet_weight + tweet.favorite_count * like_weight + tweet.user.followers_count * follower_weight
     if "https" in tweet.text:
@@ -93,7 +93,7 @@ def count_keywords_in_tweets(tweets, keywords):
 
 def get_most_important_low_cap_coins(tweets):
     coin_names = get_low_market_cap_coins()
-    result = search_tweets_for_keywords(tweets, coin_names)
+    result = count_keywords_in_tweets(tweets, coin_names)
     return result
 
 
