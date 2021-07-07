@@ -1,4 +1,5 @@
 import tweepy as tw
+import webbrowser
 from dotenv import load_dotenv
 import os
 from models import Tweet
@@ -25,6 +26,8 @@ def show_tweet(tweet):
     print(f'Tweeted at {tweet.created_at} by {tweet.user.screen_name}. id: {tweet.id}')
     print(f'Text: {tweet.text}')
     print(f'Likes: {tweet.favorite_count}, Retweets: {tweet.retweet_count}')
+    webbrowser.open("https://twitter.com/i/web/status/" + str(tweet.id))
+
 
 
 def show_user(user):
@@ -50,7 +53,7 @@ def get_tweet_importance(tweet, retweet_weight=0.5, like_weight=0.3,
 
 def most_important_tweets(tweet_set, tweets_returned=5):
     if not len(tweet_set) >= tweets_returned:
-        return "Can't return more tweets than in the set"
+        return None
 
     important_tweets = tweet_set[0:tweets_returned]
     for tweet in tweet_set[0:]:
@@ -73,6 +76,8 @@ def search_tweets_for_keywords(tweets, keywords):
                 tweet_list.append(tweet)
                 break
     return tweet_list
+
+
 
 
 def count_keywords_in_tweets(tweets, keywords):
@@ -139,7 +144,7 @@ def find_new_crypto_projects(tweet_set):
 
 def find_financing_rounds():
     tweet_set = []
-    for tweet in tw.Cursor(api.user_timeline, id="ICO_Analytics").items(20):
+    for tweet in tw.Cursor(api.user_timeline, id="ICO_Analytics").items(100):
         tweet_set.append(tweet)
     keywords = ["investment lead", "public sale", "token sale", "raised", "the close of", "funding round",
                 "been committed"]
