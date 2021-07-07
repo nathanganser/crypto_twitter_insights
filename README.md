@@ -30,4 +30,6 @@ TODO *A function that searches for x,y,z links in a tweet set and then runs this
 *Looking at @ICO_Analytics's tweets and filter for specific keywords*
 
 ### Improvements for production
--[ ] Get the past 14 days of tweets for influencers instead of the last 20 tweets
+-[ ] Build API
+-[ ] Reduce need to call Twitter api to avoid hitting rate limit errors
+
