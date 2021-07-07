@@ -89,6 +89,6 @@ most_retweeted_tweets(tweet_set)
 ten_important_coin_telegraph_articles(tweet_set)
 ct_market_sentiment(tweet_set)
 most_important_low_cap_coins(tweet_set)
-new_crypto_project(tweet_set)
+new_crypto_project(tweet_set[0:99])
 recent_funding_rounds() # Only looks at ICO_Analytics
 
