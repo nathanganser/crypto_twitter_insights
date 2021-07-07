@@ -23,7 +23,7 @@ twitter_account_ids = [1140429573978378241, 997715301545361408, 1098681096, 5383
                        1073132650309726208, 1075413923908804608, 1012777913299689477, 2603525726, 342470910,
                        995167085666828288, 1256327425916616704, 25552514, 1269095159192485896, 316064087]
 
-twitter_account_ids = [1140429573978378241, 997715301545361408]
+#twitter_account_ids = [1140429573978378241, 997715301545361408]
 # authenticate
 auth = tw.OAuthHandler(my_api_key, my_api_secret)
 api = tw.API(auth, wait_on_rate_limit=True)
@@ -82,10 +82,11 @@ def recent_funding_rounds():
             print('---------')
 
 
-#five_most_important_tweets_of_the_day(tweet_set)
-#most_retweeted_tweets(tweet_set)
+five_most_important_tweets_of_the_day(tweet_set)
+most_retweeted_tweets(tweet_set)
 ten_important_coin_telegraph_articles(tweet_set)
-#ct_market_sentiment(tweet_set)
-#most_important_low_cap_coins(tweet_set)
-#new_crypto_project(tweet_set[0:99])
-#recent_funding_rounds()  # Only looks at ICO_Analytics
+ct_market_sentiment(tweet_set)
+most_important_low_cap_coins(tweet_set)
+recent_funding_rounds()  # Only looks at ICO_Analytics
+new_crypto_project(tweet_set[0:99])
+
