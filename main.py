@@ -63,6 +63,7 @@ def ten_important_coin_telegraph_articles(tweet_set):
 
 def most_important_low_cap_coins(tweet_set):
     result = get_most_important_low_cap_coins(tweet_set)
+    print('=== Most talked about low market cap coins ===')
     print(result)
 
 def new_crypto_project(tweet_set):
@@ -82,11 +83,11 @@ def recent_funding_rounds():
             print('---------')
 
 
-#five_most_important_tweets_of_the_day(tweet_set) # better with more tweets
-#most_retweeted_tweets(tweet_set)
+five_most_important_tweets_of_the_day(tweet_set) # better with more tweets
+most_retweeted_tweets(tweet_set)
 
-#ten_important_coin_telegraph_articles(tweet_set)
-#ct_market_sentiment(tweet_set)
-#new_crypto_project(tweet_set)
+ten_important_coin_telegraph_articles(tweet_set)
+ct_market_sentiment(tweet_set)
+new_crypto_project(tweet_set)
 most_important_low_cap_coins(tweet_set)
-#recent_funding_rounds() # Only looks at ICO_Analytics
+recent_funding_rounds() # Only looks at ICO_Analytics
