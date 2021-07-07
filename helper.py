@@ -1,6 +1,7 @@
 import tweepy as tw
 from dotenv import load_dotenv
 import os
+from models import Tweet
 import datetime
 from coinmarketcap import get_low_market_cap_coins
 
@@ -35,31 +36,29 @@ def show_user(user):
 def count_retweets_by_influencers(tweet_id, influencer_ids):
     # getting ids
     retweeters = api.retweeters(tweet_id)
-    #print(f'got the retweets of that tweet: {retweeters}')
+    # print(f'got the retweets of that tweet: {retweeters}')
     return len(set(influencer_ids).intersection(retweeters))
 
 
-def get_tweet_importance(tweet, influencer_ids, retweet_weight=0.5, influencer_retweet_weight=20, like_weight=0.1,
+def get_tweet_importance(tweet, retweet_weight=0.5, like_weight=0.1,
                          follower_weight=0.01, link_weight=10):
     tweet_importance = tweet.retweet_count * retweet_weight + tweet.favorite_count * like_weight + tweet.user.followers_count * follower_weight
     if "https" in tweet.text:
         tweet_importance += link_weight
-    if tweet.retweet_count > 60:
-        tweet_importance += count_retweets_by_influencers(tweet.id, influencer_ids) * influencer_retweet_weight
     return tweet_importance
 
 
-def most_important_tweets(tweet_set, influencer_ids, tweets_returned=5):
+def most_important_tweets(tweet_set, tweets_returned=5):
     if not len(tweet_set) >= tweets_returned:
         return "Can't return more tweets than in the set"
 
     important_tweets = tweet_set[0:tweets_returned]
     for tweet in tweet_set[0:]:
         # print(f'Looking at tweet: {tweet.text}')
-        tweet_importance = get_tweet_importance(tweet, influencer_ids)
+        tweet_importance = get_tweet_importance(tweet)
         for i in range(0, len(important_tweets), +1):
             selected_tweet = important_tweets[i]
-            selected_tweet_importance = get_tweet_importance(selected_tweet, influencer_ids)
+            selected_tweet_importance = get_tweet_importance(selected_tweet)
             if tweet_importance > selected_tweet_importance:
                 important_tweets[i] = tweet
                 break
@@ -127,16 +126,59 @@ def is_new_crypto_project(id):
 
 def find_new_crypto_projects(tweet_set):
     new_crypto_projects = []
+    checked_accounts = []
     for tweet in tweet_set:
         for user in tweet.entities.get('user_mentions'):
-            if is_new_crypto_project(user.get('screen_name')):
-                new_crypto_projects.append(user.get('screen_name'))
+            if user not in checked_accounts:
+                checked_accounts.append(user)
+                if is_new_crypto_project(user.get('screen_name')) and user.get(
+                        'screen_name') not in new_crypto_projects:
+                    new_crypto_projects.append(user.get('screen_name'))
     return new_crypto_projects
 
 
 def find_financing_rounds():
-    tweet_set = api.user_timeline("ICO_Analytics")
+    tweet_set = []
+    for tweet in tw.Cursor(api.user_timeline, id="ICO_Analytics").items(20):
+        tweet_set.append(tweet)
     keywords = ["investment lead", "public sale", "token sale", "raised", "the close of", "funding round",
                 "been committed"]
     relevant_tweets = search_tweets_for_keywords(tweet_set, keywords)
     return relevant_tweets
+
+
+def add_to_array(array, Tweet):
+    for el in array:
+        # print(f'comparing {el.id} and {Tweet.id}')
+        if Tweet.id == el.id:
+            # print(f'Already there, +1 count')
+            el.retweet_count += 1
+            el.retweeters += Tweet.retweeters
+            return array
+    array.append(Tweet)
+    # print(f'added {Tweet.id} to the array, array length {len(array)}')
+    return array
+
+
+def most_retweeted_tweets(tweet_set):
+    print(f'===== Most retweeted tweets ======')
+    array = []
+    for tweet in tweet_set:
+        try:
+            if tweet.retweeted_status:
+
+                try:
+                    if tweet.retweeted_status.quoted_status_id:
+                        # print(f'2-retweet: {tweet.retweeted_status.quoted_status_id}, retweeted by: {tweet.id}')
+                        t = Tweet(tweet.retweeted_status.quoted_status_id, tweet.id)
+                        array = add_to_array(array, t)
+                except Exception as e:
+                    # print(f'1-retweet: {tweet.retweeted_status.id}, retweeted by: {tweet.id}')
+                    t = Tweet(tweet.retweeted_status.id, tweet.id)
+                    array = add_to_array(array, t)
+                    pass
+        except Exception as e:
+            pass
+    for el in array:
+        if el.retweet_count > 2:
+            print(f'Tweet id {el.id} was retweeted {el.retweet_count} times by {el.retweeters}')

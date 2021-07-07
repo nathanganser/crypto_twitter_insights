@@ -3,7 +3,7 @@ import tweepy as tw
 import os
 from dotenv import load_dotenv
 from helper import show_tweet, most_important_tweets, get_most_important_low_cap_coins, search_tweets_for_keywords, \
-    get_ids_from_usernames, find_new_crypto_projects, find_financing_rounds, show_user
+    get_ids_from_usernames, find_new_crypto_projects, find_financing_rounds, show_user, most_retweeted_tweets
 from language_processing import ct_market_sentiment
 
 load_dotenv()
@@ -34,38 +34,44 @@ print('loading tweets...')
 for account in twitter_account_ids:
     for tweet in tw.Cursor(api.user_timeline, id=account).items(100):
         tweet_set.append(tweet)
+
 print(f'loaded {len(tweet_set)} tweets from {len(twitter_account_ids)} accounts')
 
 
-def five_most_important_tweets_of_the_day():
+
+
+def five_most_important_tweets_of_the_day(tweet_set):
     print('======= 5 important tweets of the day =========')
-    five_most_important_tweets_of_the_day = most_important_tweets(tweet_set, twitter_account_ids, tweets_returned=5)
-    for t in five_most_important_tweets_of_the_day:
+    five_most_important_tweets = most_important_tweets(tweet_set, tweets_returned=5)
+    for t in five_most_important_tweets:
         show_tweet(t)
         print('---------')
 
 
-def ten_important_coin_telegraph_articles():
-    tweets_with_article = search_tweets_for_keywords(tweet_set, "cointelegraph.com")
-    important_cointelegraph_tweets = most_important_tweets(tweets_with_article, twitter_account_ids, tweets_returned=10)
-    if important_cointelegraph_tweets:
-        print('=======  10 important coin_telegraph_articles ========')
-        for t in important_cointelegraph_tweets:
-            show_tweet(t)
-            print('---------')
+def ten_important_coin_telegraph_articles(tweet_set):
+    print('=======  10 important coin_telegraph_articles ========')
+    tweets_with_article = search_tweets_for_keywords(tweet_set, ["cointelegraph.com"])
+    if tweets_with_article:
+        important_cointelegraph_tweets = most_important_tweets(tweets_with_article, twitter_account_ids, tweets_returned=10)
+        if important_cointelegraph_tweets:
+            for t in important_cointelegraph_tweets:
+                show_tweet(t)
+                print('---------')
     else:
         print('Could not find any coin_telegraph articles')
 
 
-def most_important_low_cap_coins():
+def most_important_low_cap_coins(tweet_set):
     result = get_most_important_low_cap_coins(tweet_set)
     print(result)
 
-def new_crypto_project():
+def new_crypto_project(tweet_set):
+    print('==== New Crypto Projects =====')
     usernames = find_new_crypto_projects(tweet_set)
     for user in usernames:
         u = api.get_user(user)
         show_user(u)
+        print('-----')
 
 def recent_funding_rounds():
     tweets = find_financing_rounds()
@@ -76,11 +82,11 @@ def recent_funding_rounds():
             print('---------')
 
 
-five_most_important_tweets_of_the_day()
-ten_important_coin_telegraph_articles()
-print('==== Market Sentiment =====')
-print(ct_market_sentiment(tweet_set))
-print('==== New Crypto Projects =====')
-new_crypto_project()
+#five_most_important_tweets_of_the_day(tweet_set) # better with more tweets
+#most_retweeted_tweets(tweet_set)
 
-recent_funding_rounds()
+#ten_important_coin_telegraph_articles(tweet_set)
+#ct_market_sentiment(tweet_set)
+#new_crypto_project(tweet_set)
+most_important_low_cap_coins(tweet_set)
+#recent_funding_rounds() # Only looks at ICO_Analytics

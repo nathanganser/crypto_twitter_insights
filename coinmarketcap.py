@@ -22,6 +22,6 @@ def get_low_market_cap_coins():
     coin_names = []
     coins = get_data().get('data')
     for coin in coins:
-        coin_names.append(coin.get('name'))
+        coin_names.append("$" + coin.get('symbol'))
     return coin_names
 
